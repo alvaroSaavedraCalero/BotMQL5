@@ -1,0 +1,41 @@
+# Multi-TF Scalping Bot for MT5
+# Python Dependencies
+
+# MetaTrader 5 API
+MetaTrader5>=5.0.45
+
+# Dashboard
+dash>=2.14.0
+dash-bootstrap-components>=1.5.0
+plotly>=5.18.0
+
+# Data processing
+pandas>=2.0.0
+numpy>=1.24.0
+
+# HTTP requests (for news calendar)
+requests>=2.31.0
+aiohttp>=3.9.0
+
+# Database
+sqlalchemy>=2.0.0
+
+# Scheduling
+schedule>=1.2.0
+APScheduler>=3.10.0
+
+# Timezone handling
+pytz>=2023.3
+
+# Async support
+asyncio-compat>=0.1.0
+
+# Logging
+colorlog>=6.7.0
+
+# Environment variables (optional)
+python-dotenv>=1.0.0
+
+# Testing (optional)
+pytest>=7.4.0
+pytest-asyncio>=0.21.0

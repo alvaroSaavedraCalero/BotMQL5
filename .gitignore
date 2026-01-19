@@ -1,0 +1,171 @@
+# ============================
+# Multi-TF Scalping Bot
+# Git Ignore File
+# ============================
+
+# ============================
+# Python
+# ============================
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+
+# Virtual Environment
+venv/
+env/
+.env
+ENV/
+
+# Distribution / packaging
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+
+# PyInstaller
+*.manifest
+*.spec
+
+# Installer logs
+pip-log.txt
+pip-delete-this-directory.txt
+
+# Unit test / coverage reports
+htmlcov/
+.tox/
+.nox/
+.coverage
+.coverage.*
+.cache
+nosetests.xml
+coverage.xml
+*.cover
+*.py,cover
+.hypothesis/
+.pytest_cache/
+
+# Jupyter Notebook
+.ipynb_checkpoints
+
+# IPython
+profile_default/
+ipython_config.py
+
+# pyenv
+.python-version
+
+# Celery
+celerybeat-schedule
+celerybeat.pid
+
+# ============================
+# MQL5
+# ============================
+# Compiled files
+*.ex5
+*.ex4
+
+# Logs
+*.log
+Logs/
+
+# Tester files
+Tester/
+
+# ============================
+# IDE / Editor
+# ============================
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.project
+.pydevproject
+.settings/
+*.sublime-project
+*.sublime-workspace
+
+# ============================
+# Operating System
+# ============================
+# macOS
+.DS_Store
+.AppleDouble
+.LSOverride
+._*
+
+# Windows
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+$RECYCLE.BIN/
+*.lnk
+
+# Linux
+*~
+
+# ============================
+# Project Specific
+# ============================
+# Database
+*.db
+*.sqlite
+*.sqlite3
+
+# Data files
+Python/data/*.json
+Python/data/*.csv
+!Python/data/.gitkeep
+
+# Logs
+Python/logs/
+logs/
+
+# Local configuration
+config_local.py
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+
+# MT5 communication files
+Python/data/mt5_files/
+ScalpingBot/
+
+# Temporary files
+*.tmp
+*.temp
+*.bak
+
+# News cache
+news_cache.json
+
+# ============================
+# Secrets / Credentials
+# ============================
+*.pem
+*.key
+credentials.json
+secrets.json
+api_keys.json
+
+# ============================
+# Build artifacts
+# ============================
+node_modules/
+*.min.js
+*.min.css
