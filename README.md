@@ -60,10 +60,23 @@ BotMQL5/
 │   ├── communication/                # Comunicación MT5
 │   ├── dashboard/                    # Dashboard web
 │   ├── data/                         # Base de datos
-│   └── utils/                        # Utilidades
+│   ├── utils/                        # Utilidades
+│   ├── backtest/                     # Sistema de backtesting
+│   │   ├── backtester.py             # Motor de simulación
+│   │   ├── signal_engine_bt.py       # Motor de señales
+│   │   ├── portfolio.py              # Gestión de cuenta
+│   │   ├── trade.py                  # Gestión de trades
+│   │   ├── data_loader.py            # Carga de datos históricos
+│   │   ├── statistics.py             # Cálculo de métricas
+│   │   ├── visualizer.py             # Generación de gráficos
+│   │   └── report.py                 # Generación de reportes
+│   ├── run_backtest.py               # Script principal de backtest
+│   ├── example_backtest.py           # Ejemplos de uso
+│   └── backtest_requirements.txt     # Dependencias backtest
 │
 ├── .gitignore
-└── README.md
+├── README.md
+└── BACKTEST_README.md                # Documentación del backtesting
 ```
 
 ## 🚀 Instalación
@@ -80,9 +93,16 @@ cd BotMQL5
 ```
 
 ### Paso 2: Instalar dependencias de Python
+
+#### Para el sistema completo (Dashboard + Trading)
 ```bash
 cd Python
 pip install -r requirements.txt
+```
+
+#### Para backtesting (opcional pero recomendado)
+```bash
+pip install -r backtest_requirements.txt
 ```
 
 ### Paso 3: Instalar EA en MetaTrader 5
@@ -162,6 +182,17 @@ El sistema usa archivos compartidos para la comunicación:
 
 ## 📈 Uso
 
+### 🔬 Paso 0: Backtest (RECOMENDADO)
+
+Antes de usar en cuenta real o demo, ejecuta backtests para validar la estrategia:
+
+```bash
+cd Python
+python run_backtest.py --symbol EURUSD --start 2023-01-01 --end 2023-12-31
+```
+
+Ver sección [Sistema de Backtesting](#-sistema-de-backtesting-en-python) para más detalles.
+
 ### Modo Completo (EA + Dashboard)
 1. Iniciar MetaTrader 5 con el EA adjunto al gráfico
 2. Ejecutar `python main.py` en la carpeta Python
@@ -178,12 +209,22 @@ El EA puede funcionar de forma independiente sin Python, pero sin:
 python main.py --no-signals
 ```
 
+### Solo Backtesting (análisis histórico)
+```bash
+python run_backtest.py
+# o ejecuta ejemplos interactivos
+python example_backtest.py
+```
+
 ## ⚠️ Advertencias
 
-- **Cuenta Demo**: Prueba siempre en cuenta demo primero
-- **Backtesting**: Realiza backtesting extensivo antes de usar en real
+- **Backtesting Obligatorio**: Realiza backtesting extensivo con el sistema Python incluido antes de usar en real
+- **Cuenta Demo**: Prueba siempre en cuenta demo durante al menos 1-2 meses
+- **Validación**: Compara resultados del backtest con resultados reales en demo
 - **Riesgo**: El trading conlleva riesgo de pérdida de capital
-- **Supervisión**: Monitorea el bot regularmente
+- **Supervisión**: Monitorea el bot regularmente, especialmente durante noticias
+- **Optimización**: No confíes en una sola optimización, usa walk-forward analysis
+- **Datos Históricos**: El rendimiento pasado no garantiza resultados futuros
 
 ## 🧪 Testing
 
@@ -198,6 +239,183 @@ python main.py --no-signals
 cd Python
 pytest tests/
 ```
+
+## 🔬 Sistema de Backtesting en Python
+
+El proyecto incluye un **sistema completo de backtesting** que replica la estrategia MT5 para análisis histórico exhaustivo.
+
+### ✨ Características del Backtester
+
+- ✅ **Simulación tick-by-tick** con datos M1, M5 y M15
+- ✅ **Réplica exacta** de la estrategia MT5
+- ✅ **Gestión completa** de SL, TP parcial y TP final
+- ✅ **Gestión de riesgo** avanzada con control de drawdown
+- ✅ **Múltiples fuentes** de datos (Yahoo Finance, CSV, MT5)
+- ✅ **Reportes detallados** en TXT, CSV, JSON y HTML
+- ✅ **Visualizaciones** profesionales (equity, drawdown, distribución)
+- ✅ **30+ métricas** (Sharpe, Sortino, Calmar, Profit Factor, etc.)
+
+### 🚀 Instalación Rápida
+
+```bash
+cd Python
+pip install -r backtest_requirements.txt
+```
+
+### 📊 Uso Básico
+
+#### Backtest Simple
+```bash
+# Backtest de EURUSD (últimos 3 meses)
+python run_backtest.py
+
+# Backtest personalizado
+python run_backtest.py --symbol GBPUSD --start 2023-01-01 --end 2023-12-31
+```
+
+#### Parámetros Disponibles
+```bash
+python run_backtest.py --help
+
+Opciones:
+  --symbol SYMBOL       Símbolo (EURUSD, GBPUSD, etc.)
+  --start YYYY-MM-DD    Fecha inicial
+  --end YYYY-MM-DD      Fecha final
+  --balance FLOAT       Balance inicial [default: 10000]
+  --leverage INT        Apalancamiento [default: 100]
+  --risk FLOAT          Riesgo por trade % [default: 1.0]
+  --spread FLOAT        Spread en pips [default: 1.0]
+  --commission FLOAT    Comisión por lote [default: 0.0]
+  --source {yfinance,csv,mt5}
+  --output-dir PATH     Directorio de salida
+```
+
+### 💡 Ejemplo en Código Python
+
+```python
+from backtest.data_loader import DataLoader
+from backtest.backtester import Backtester
+from datetime import datetime, timedelta
+
+# Cargar datos
+loader = DataLoader()
+end_date = datetime.now()
+start_date = end_date - timedelta(days=60)
+
+data_m1 = loader.load_data("EURUSD=X", start_date, end_date, "1min")
+data_m5 = loader.load_data("EURUSD=X", start_date, end_date, "5min")
+data_m15 = loader.load_data("EURUSD=X", start_date, end_date, "15min")
+
+# Ejecutar backtest
+backtester = Backtester(
+    symbol="EURUSD",
+    initial_balance=10000.0,
+    risk_per_trade=1.0,
+    stop_loss_pips=12.0
+)
+
+results = backtester.run(data_m1, data_m5, data_m15)
+
+# Generar reportes y gráficos
+backtester.generate_reports(results)
+```
+
+### 📈 Resultados Generados
+
+El backtest genera automáticamente:
+
+```
+backtest_results/
+├── backtest_report.txt          # Reporte detallado en texto
+├── backtest_report.json         # Datos estructurados en JSON
+├── backtest_report.html         # Reporte visual interactivo
+├── trades.csv                   # Histórico completo de trades
+├── equity_curve.csv             # Curva de equity
+├── equity_curve.png             # Gráfico de equity y P/L
+├── drawdown.png                 # Análisis de drawdown
+├── trade_distribution.png       # Distribución de resultados
+└── monthly_returns.png          # Retornos mensuales
+```
+
+### 📊 Métricas Calculadas
+
+**Básicas:**
+- Total de trades, Win rate, Profit factor
+- Beneficio neto/bruto, Pérdida bruta
+- Expectancy, Ratio ganancia/pérdida
+
+**Drawdown:**
+- Max drawdown ($ y %), Average drawdown
+- Recovery factor
+
+**Riesgo:**
+- Sharpe ratio, Sortino ratio, Calmar ratio
+
+**Temporales:**
+- Duración promedio de trades
+- Retornos mensuales y anuales
+- Rachas de victorias/derrotas
+
+### 🎯 Ejemplos Avanzados
+
+#### Comparar Múltiples Símbolos
+```python
+symbols = ["EURUSD", "GBPUSD", "USDJPY"]
+for symbol in symbols:
+    # Cargar datos y ejecutar backtest
+    results = backtester.run(data_m1, data_m5, data_m15)
+    print(f"{symbol}: Net Profit = ${results['statistics']['net_profit']:.2f}")
+```
+
+#### Optimización de Parámetros
+```python
+best_profit = 0
+for sl in [10, 12, 15]:
+    for risk in [0.5, 1.0, 1.5]:
+        backtester = Backtester(stop_loss_pips=sl, risk_per_trade=risk)
+        results = backtester.run(data_m1, data_m5, data_m15, verbose=False)
+        if results['statistics']['net_profit'] > best_profit:
+            best_profit = results['statistics']['net_profit']
+            print(f"Mejor combinación: SL={sl}, Risk={risk}")
+```
+
+### 📚 Documentación Completa
+
+Para guía detallada, ejemplos avanzados y troubleshooting, consulta:
+
+```bash
+cat BACKTEST_README.md
+```
+
+O ejecuta ejemplos interactivos:
+```bash
+python example_backtest.py
+```
+
+### 🎨 Fuentes de Datos
+
+**Yahoo Finance (Recomendado para empezar):**
+- ✅ Gratis y sin instalación
+- ✅ Fácil de usar
+- ⚠️ Limitado a ~30-60 días para datos intraday
+
+**Archivos CSV:**
+- ✅ Control total de los datos
+- ✅ Ideal para datos propios
+- Formato: `time,open,high,low,close,volume`
+
+**MetaTrader 5 Directo:**
+- ✅ Datos oficiales del broker
+- ✅ Sin límite de histórico
+- ⚠️ Requiere MT5 instalado y conectado
+
+### ⚡ Consejos de Uso
+
+1. **Empieza con períodos cortos** (1-2 meses) para pruebas rápidas
+2. **Usa cache de datos** para acelerar tests repetidos
+3. **Compara con MT5 Strategy Tester** para validar resultados
+4. **Analiza drawdown** antes que profit absoluto
+5. **Haz walk-forward analysis** para validar robustez
 
 ## 📝 Licencia
 
