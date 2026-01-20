@@ -52,7 +52,7 @@ def create_dashboard(config, socket_server=None, risk_manager=None,
     app.risk_manager = risk_manager
     app.news_filter = news_filter
     app.mt5_connector = mt5_connector
-    app.config = config
+    app.bot_config = config
 
     # Create layout
     app.layout = create_layout(config)
@@ -74,7 +74,7 @@ def run_dashboard(app, host='0.0.0.0', port=8050, debug=False):
         debug: Enable debug mode
     """
     logger.info(f"Starting dashboard on http://{host}:{port}")
-    app.run_server(host=host, port=port, debug=debug)
+    app.run(host=host, port=port, debug=debug)
 
 
 # Standalone execution for testing

@@ -27,9 +27,6 @@ APScheduler>=3.10.0
 # Timezone handling
 pytz>=2023.3
 
-# Async support
-asyncio-compat>=0.1.0
-
 # Logging
 colorlog>=6.7.0
 

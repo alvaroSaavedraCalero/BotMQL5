@@ -140,7 +140,7 @@ def register_callbacks(app):
         if data:
             stats = data.get('daily_stats', {})
             total = stats.get('total_trades', 0)
-            max_ops = app.config.trading.max_daily_operations if app.config else 10
+            max_ops = app.bot_config.trading.max_daily_operations if app.bot_config else 10
             return f"{total} / {max_ops}"
         return "0 / 10"
 
@@ -190,7 +190,7 @@ def register_callbacks(app):
             return "0.00%", 0, "success"
 
         dd = data.get('account', {}).get('drawdown', 0)
-        max_dd = app.config.trading.max_drawdown if app.config else 10
+        max_dd = app.bot_config.trading.max_drawdown if app.bot_config else 10
 
         progress = min(100, (dd / max_dd) * 100) if max_dd > 0 else 0
 
@@ -215,7 +215,7 @@ def register_callbacks(app):
             return "0.00%", 0, "success"
 
         dd = data.get('account', {}).get('daily_drawdown', 0)
-        max_dd = app.config.trading.max_daily_drawdown if app.config else 5
+        max_dd = app.bot_config.trading.max_daily_drawdown if app.bot_config else 5
 
         progress = min(100, (dd / max_dd) * 100) if max_dd > 0 else 0
 
@@ -241,7 +241,7 @@ def register_callbacks(app):
 
         stats = data.get('daily_stats', {})
         ops = stats.get('total_trades', 0)
-        max_ops = app.config.trading.max_daily_operations if app.config else 10
+        max_ops = app.bot_config.trading.max_daily_operations if app.bot_config else 10
 
         progress = min(100, (ops / max_ops) * 100) if max_ops > 0 else 0
 
