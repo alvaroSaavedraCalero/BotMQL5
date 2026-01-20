@@ -1,135 +1,91 @@
 # Configuración del Entorno - Multi-TF Scalping Bot
 
-## ✅ Estado de la Instalación
+## ✅ Requisitos del Sistema
 
-El entorno de desarrollo ha sido configurado exitosamente:
+Este proyecto está diseñado para ejecutarse **exclusivamente en Windows**, ya que MetaTrader 5 y la biblioteca `MetaTrader5` de Python requieren este sistema operativo.
 
-- ✅ Python 3.11.14 instalado
-- ✅ Entorno virtual creado en `venv/`
-- ✅ Todas las dependencias de Python instaladas
-- ✅ Directorios de datos y logs creados
-- ✅ Scripts de inicio configurados
+**Requisitos:**
+- ✅ Windows 10 o superior
+- ✅ Python 3.9 o superior
+- ✅ MetaTrader 5 instalado
+- ✅ Mínimo 4GB RAM
+- ✅ Conexión a Internet estable
 
-## 🖥️ Consideración Importante: Linux vs Windows
+## 🚀 Instalación Inicial
 
-**Tu sistema actual:** Linux
+### 1. Instalar Python
 
-**MetaTrader 5 requiere:** Windows (o macOS con limitaciones)
-
-### El Problema
-
-La biblioteca `MetaTrader5` de Python **solo funciona en Windows** porque se comunica directamente con la aplicación MetaTrader 5 a través de su API nativa. Aunque mencionaste que tienes MetaTrader 5 instalado, hay dos posibilidades:
-
-1. **Tienes MT5 en Windows** (dual boot, otra máquina, etc.)
-2. **Tienes MT5 en Wine/PlayOnLinux** en Linux
-
-### Opciones de Configuración
-
-#### Opción 1: Ejecutar Todo en Windows (RECOMENDADO)
-
-**Ventajas:**
-- ✅ Funcionalidad completa sin problemas
-- ✅ Mejor rendimiento
-- ✅ Soporte oficial de MT5
-
-**Cómo hacerlo:**
-1. Clona este repositorio en tu máquina Windows
-2. Sigue las instrucciones en `INSTALACION_MT5.md`
-3. Instala Python 3.9+ en Windows
-4. Ejecuta:
+1. Descarga Python 3.9+ desde [python.org](https://www.python.org/downloads/)
+2. Durante la instalación, **marca la opción "Add Python to PATH"**
+3. Verifica la instalación:
    ```cmd
-   python -m venv venv
-   venv\Scripts\activate
-   cd Python
-   pip install -r requirements.txt
-   python main.py
+   python --version
    ```
 
-#### Opción 2: Arquitectura Híbrida (Linux + Windows)
+### 2. Configurar el Entorno Virtual
 
-**Ventajas:**
-- ✅ Desarrollo en Linux, trading en Windows
-- ✅ Usar tu entorno Linux preferido
+Abre una terminal de PowerShell o CMD en la carpeta del proyecto:
 
-**Arquitectura:**
-```
-┌─────────────────┐         ┌──────────────────┐
-│  Linux (este)   │         │    Windows       │
-│                 │         │                  │
-│  - Dashboard    │◄───────►│  - MetaTrader 5  │
-│  - Python core  │  JSON   │  - EA (MQL5)     │
-│  - Análisis     │  Files  │                  │
-└─────────────────┘         └──────────────────┘
+```cmd
+python -m venv venv
+venv\Scripts\activate
 ```
 
-**Cómo hacerlo:**
+### 3. Instalar Dependencias
 
-**En Windows:**
-1. Instala MetaTrader 5
-2. Copia la carpeta `MQL5/` según `INSTALACION_MT5.md`
-3. Compila y activa el EA
+```cmd
+cd Python
+pip install -r requirements.txt
+```
 
-**En Linux (este sistema):**
-1. El entorno ya está configurado
-2. Configura una carpeta compartida entre Linux y Windows (Samba, NFS, o carpeta compartida de VM)
-3. Modifica `Python/config.py` línea 96-104 para apuntar a la carpeta compartida:
-   ```python
-   # En lugar de buscar en APPDATA, usa la carpeta compartida
-   self.mt5_common_path = Path("/mnt/windows_share/ScalpingBot")
-   ```
+Esto instalará:
+- `MetaTrader5>=5.0.45` - Conexión con MT5
+- `pandas>=2.0.0` - Análisis de datos
+- `numpy>=1.24.0` - Cálculos numéricos
+- `dash>=2.14.0` - Dashboard web
+- `plotly>=5.17.0` - Gráficos interactivos
+- Y otras dependencias necesarias
 
-#### Opción 3: Solo Dashboard de Monitoreo (Limitado)
+### 4. Instalar MetaTrader 5
 
-**Ventajas:**
-- ✅ Puedes ejecutar el dashboard en Linux
-- ✅ Útil para desarrollo y pruebas de UI
+Sigue la guía detallada en `INSTALACION_MT5.md` para:
+- Instalar MetaTrader 5
+- Copiar y compilar el Expert Advisor (EA)
+- Configurar parámetros de trading
 
-**Limitaciones:**
-- ❌ No puede conectarse a MT5 sin configuración adicional
-- ❌ Necesita archivos JSON creados por el EA en Windows
+## 🚀 Inicio Rápido
 
-**Cómo hacerlo:**
-1. Ejecuta el dashboard en modo desarrollo:
-   ```bash
-   ./start.sh
-   ```
-2. El dashboard mostrará datos de ejemplo o históricos
+### 1. Activar el Entorno Virtual
 
-#### Opción 4: Wine/PlayOnLinux (No Recomendado)
+Cada vez que abras una nueva terminal:
 
-**Nota:** MetaTrader 5 puede ejecutarse en Wine, pero:
-- ⚠️ Rendimiento inconsistente
-- ⚠️ Posibles problemas de estabilidad
-- ⚠️ No recomendado para trading real
+```cmd
+venv\Scripts\activate
+```
 
-## 🚀 Inicio Rápido (Linux)
+### 2. Iniciar el Dashboard y Servicios Python
 
-Si decides usar la **Opción 2** (Híbrida), sigue estos pasos:
-
-### 1. Iniciar el Dashboard y Servicios Python
-
-```bash
-cd /home/user/BotMQL5
-./start.sh
+```cmd
+cd Python
+python main.py
 ```
 
 Esto iniciará:
 - Dashboard web en `http://localhost:8050`
-- Servidor de comunicación
-- Sistema de monitoreo
+- Servidor de comunicación con MT5
+- Sistema de monitoreo y logging
 
-### 2. En Windows (separado)
+### 3. Activar el EA en MetaTrader 5
 
-Sigue la guía `INSTALACION_MT5.md` para:
-- Instalar el EA en MetaTrader 5
-- Configurar parámetros
-- Activar el trading algorítmico
+1. Abre MetaTrader 5
+2. Arrastra el EA `MultiTF_Scalper` a un gráfico
+3. Configura los parámetros según tu estrategia
+4. Habilita el trading algorítmico (botón "AutoTrading")
 
 ## 📁 Estructura de Archivos de Comunicación
 
-El bot se comunica mediante archivos JSON en:
+El bot se comunica mediante archivos JSON ubicados en:
 
-**Windows:**
 ```
 %APPDATA%\MetaQuotes\Terminal\Common\Files\ScalpingBot\
 ├── mt5_status.json        # Estado del EA → Python
@@ -139,10 +95,9 @@ El bot se comunica mediante archivos JSON en:
 └── heartbeat.json         # Latido de conexión
 ```
 
-**Linux (configuración híbrida):**
+**Ruta típica completa:**
 ```
-/mnt/windows_share/ScalpingBot/  # o ruta que configures
-├── (mismos archivos que arriba)
+C:\Users\[TuUsuario]\AppData\Roaming\MetaQuotes\Terminal\Common\Files\ScalpingBot\
 ```
 
 ## 🔧 Personalización de Configuración
@@ -151,9 +106,9 @@ El bot se comunica mediante archivos JSON en:
 
 Crea un archivo `.env` basado en `.env.example`:
 
-```bash
-cp .env.example .env
-nano .env  # o tu editor preferido
+```cmd
+copy .env.example .env
+notepad .env
 ```
 
 Modifica los valores según tus necesidades.
@@ -168,23 +123,24 @@ Edita `Python/config.py` para cambiar:
 
 ## 🧪 Probar el Sistema
 
-### Solo Python (sin MT5)
+### Verificar Configuración
 
-Puedes probar el dashboard y componentes Python:
+Puedes verificar que Python y las dependencias estén correctamente instaladas:
 
-```bash
-cd /home/user/BotMQL5
-source venv/bin/activate
+```cmd
+venv\Scripts\activate
 cd Python
 python -c "from config import config; print(config.to_dict())"
 ```
 
-Esto mostrará la configuración actual.
+Esto mostrará la configuración actual del sistema.
 
 ### Ejecutar Dashboard
 
-```bash
-./start.sh
+```cmd
+venv\Scripts\activate
+cd Python
+python main.py
 ```
 
 Abre tu navegador en `http://localhost:8050`
@@ -193,67 +149,84 @@ Abre tu navegador en `http://localhost:8050`
 
 ### Ver Logs en Tiempo Real
 
-```bash
-tail -f Python/logs/*.log
+Puedes usar PowerShell para ver logs en tiempo real:
+
+```powershell
+Get-Content Python\logs\*.log -Wait -Tail 50
 ```
+
+O simplemente abre los archivos de log con un editor de texto.
 
 ### Ubicación de Logs
 
-- **Python:** `Python/logs/`
-- **MetaTrader 5 (en Windows):**
+- **Python:** `Python\logs\`
+- **MetaTrader 5:**
   - Pestaña "Experts" en MT5
-  - Archivos log en `[Datos MT5]/MQL5/Logs/`
+  - Archivos log en `%APPDATA%\MetaQuotes\Terminal\[ID_Terminal]\MQL5\Logs\`
 
-## ⚙️ Scripts Disponibles
+## ⚙️ Comandos Útiles
 
-### `start.sh` - Iniciar el Bot
+### Iniciar el Bot
 
-```bash
-./start.sh
+```cmd
+venv\Scripts\activate
+cd Python
+python main.py
 ```
 
 Inicia el dashboard y todos los servicios Python.
 
-### Activar Entorno Virtual Manualmente
+### Activar Entorno Virtual
 
-```bash
-source venv/bin/activate
+```cmd
+venv\Scripts\activate
 ```
 
 ### Ejecutar Tests
 
-```bash
-source venv/bin/activate
+```cmd
+venv\Scripts\activate
 cd Python
-pytest tests/ -v
+pytest tests\ -v
+```
+
+### Desactivar Entorno Virtual
+
+```cmd
+deactivate
 ```
 
 ## 📝 Próximos Pasos Recomendados
 
-1. **Decide tu arquitectura:**
-   - ¿Todo en Windows? → Mueve el proyecto allí
-   - ¿Híbrido? → Configura carpeta compartida
+1. **Instala Python y dependencias:**
+   - Sigue las instrucciones de instalación inicial
+   - Verifica que todo funcione correctamente
 
 2. **Instala el EA en MT5:**
    - Sigue `INSTALACION_MT5.md` paso a paso
+   - Compila el Expert Advisor
+   - Verifica que no haya errores de compilación
 
 3. **Configura parámetros:**
-   - Edita `.env` o `config.py`
+   - Edita `.env` o `Python\config.py`
    - Ajusta según tu estrategia y capital
+   - Configura símbolos, timeframes y gestión de riesgo
 
-4. **Prueba en Demo:**
+4. **Prueba en Cuenta Demo:**
    - **SIEMPRE** prueba primero en cuenta demo
    - Monitorea al menos 2 semanas
+   - Verifica que la comunicación entre Python y MT5 funcione
 
 5. **Monitorea con el Dashboard:**
-   - Ejecuta `./start.sh`
+   - Ejecuta `python main.py` desde la carpeta Python
+   - Abre `http://localhost:8050` en tu navegador
    - Observa métricas en tiempo real
 
 ## ❓ Preguntas Frecuentes
 
-### ¿Puedo usar esto solo en Linux?
+### ¿Puedo usar este bot en Linux o macOS?
 
-No completamente. Necesitas Windows para MetaTrader 5. Pero puedes desarrollar, probar el dashboard y mantener el código en Linux.
+No. Este bot requiere Windows porque MetaTrader 5 y la biblioteca `MetaTrader5` de Python solo funcionan en este sistema operativo.
 
 ### ¿El EA funciona sin Python?
 
@@ -261,49 +234,111 @@ Sí, el EA puede funcionar de forma independiente en MT5, pero sin:
 - Dashboard de monitoreo web
 - Señales adicionales de Python
 - Estadísticas avanzadas
+- Sistema de gestión de riesgo mejorado
 
 ### ¿Python funciona sin el EA?
 
-Parcialmente. El dashboard se ejecutará pero no tendrá datos reales del mercado sin la conexión al EA.
+Parcialmente. El dashboard se ejecutará pero no tendrá datos reales del mercado sin la conexión al EA. Es útil solo para desarrollo y pruebas de la interfaz.
 
 ### ¿Dónde cambio los parámetros de trading?
 
-- **EA (MQL5):** Al agregar el EA al gráfico en MT5
-- **Python:** En `Python/config.py` o archivo `.env`
+- **EA (MQL5):** Al agregar el EA al gráfico en MT5 (ventana de parámetros)
+- **Python:** En `Python\config.py` o archivo `.env`
+
+### ¿Cómo sé si Python y MT5 están comunicándose?
+
+1. Verifica que los archivos JSON se estén creando en `%APPDATA%\MetaQuotes\Terminal\Common\Files\ScalpingBot\`
+2. Revisa los logs de Python en `Python\logs\`
+3. Observa la pestaña "Experts" en MT5
+4. El dashboard mostrará el estado de conexión
 
 ## 🆘 Solución de Problemas
 
 ### Error: "ModuleNotFoundError: No module named 'MetaTrader5'"
 
-**En Linux:**
-- Normal, esta librería solo funciona en Windows
-- El dashboard y otros componentes funcionarán sin ella
-- Para funcionalidad completa, usa Windows
+Asegúrate de tener el entorno virtual activado e instala las dependencias:
 
-**En Windows:**
+```cmd
+venv\Scripts\activate
+cd Python
+pip install -r requirements.txt
+```
+
+Si el error persiste:
 ```cmd
 pip install MetaTrader5>=5.0.45
 ```
 
 ### El dashboard no muestra datos
 
-- Verifica que el EA esté activo en MT5
-- Comprueba que los archivos JSON se están creando
-- Revisa los logs: `tail -f Python/logs/*.log`
+1. Verifica que el EA esté activo en MT5 (botón "AutoTrading" encendido)
+2. Comprueba que los archivos JSON se están creando en:
+   ```
+   %APPDATA%\MetaQuotes\Terminal\Common\Files\ScalpingBot\
+   ```
+3. Revisa los logs de Python en `Python\logs\`
+4. Revisa la pestaña "Experts" en MT5 para ver mensajes del EA
 
-### Errores de permisos
+### Error: "Python no se reconoce como comando"
 
-```bash
-chmod +x start.sh
-chmod -R 755 /home/user/BotMQL5
+Durante la instalación de Python, debes marcar la opción "Add Python to PATH". Si no lo hiciste:
+
+1. Desinstala Python
+2. Reinstálalo marcando "Add Python to PATH"
+3. O añade Python manualmente a las variables de entorno del sistema
+
+### Error al activar el entorno virtual
+
+Si `venv\Scripts\activate` no funciona en PowerShell:
+
+```powershell
+Set-ExecutionPolicy -ExecutionPolicy RemoteSigned -Scope CurrentUser
 ```
+
+Luego intenta activar nuevamente:
+```cmd
+venv\Scripts\activate
+```
+
+### MetaTrader 5 no se conecta
+
+1. Verifica tu conexión a Internet
+2. Asegúrate de tener credenciales válidas del broker
+3. Comprueba que el trading algorítmico esté habilitado en MT5
+4. Verifica que el símbolo esté disponible en tu cuenta
 
 ## 📚 Documentación Adicional
 
 - `README.md` - Descripción general del proyecto
-- `INSTALACION_MT5.md` - Guía detallada de instalación del EA
-- `Python/requirements.txt` - Lista de dependencias
-- Código MQL5 en `MQL5/Experts/MultiTF_Scalper.mq5`
+- `INSTALACION_MT5.md` - Guía detallada de instalación del EA en Windows
+- `Python\requirements.txt` - Lista de dependencias de Python
+- Código MQL5 en `MQL5\Experts\MultiTF_Scalper.mq5`
+
+## 🔐 Seguridad y Mejores Prácticas
+
+### Protección de Credenciales
+
+- **NUNCA** compartas tus credenciales de MT5
+- **NO** subas archivos `.env` al repositorio (ya está en `.gitignore`)
+- Usa cuentas demo para pruebas iniciales
+
+### Gestión de Riesgo
+
+- Comienza con lotes pequeños
+- Nunca arriesgues más del 1-2% de tu capital por operación
+- Monitorea constantemente el bot durante las primeras semanas
+- Ten un plan de emergencia para detener el bot si es necesario
+
+### Actualizaciones
+
+Para actualizar el proyecto:
+
+```cmd
+git pull origin main
+venv\Scripts\activate
+cd Python
+pip install -r requirements.txt --upgrade
+```
 
 ---
 
